@@ -237,3 +237,67 @@ button {
 .pulse-soft {
   animation: pulse-soft 2s ease-in-out infinite;
 }
+
+/* ========================================
+   QR SCANNER ANIMATIONS
+   ======================================== */
+
+@keyframes qr-backdrop-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.qr-backdrop-enter {
+  animation: qr-backdrop-fade 0.3s ease-out;
+}
+
+@keyframes qr-modal-slide {
+  from { opacity: 0; transform: scale(0.92) translateY(20px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+.qr-modal-enter {
+  animation: qr-modal-slide 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes qr-scan {
+  0% { top: 0%; opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { top: 100%; opacity: 0; }
+}
+.qr-scan-line {
+  animation: qr-scan 2s ease-in-out infinite;
+}
+
+@keyframes qr-pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.8); }
+}
+.qr-pulse-dot {
+  animation: qr-pulse-dot 1.2s ease-in-out infinite;
+}
+
+@keyframes qr-success-pop {
+  from { opacity: 0; transform: scale(0.8) translateY(30px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+.qr-success-enter {
+  animation: qr-success-pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes qr-stamp-pop {
+  0% { transform: scale(0); opacity: 0; }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); opacity: 1; }
+}
+.qr-stamp-pop {
+  animation: qr-stamp-pop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s both;
+}
+
+@keyframes qr-check-draw {
+  0% { transform: scale(0); opacity: 0; }
+  60% { transform: scale(1.15); }
+  100% { transform: scale(1); opacity: 1; }
+}
+.qr-check-draw {
+  animation: qr-check-draw 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) 0.4s both;
+}

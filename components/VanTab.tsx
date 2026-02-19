@@ -2,12 +2,10 @@
 
 import { useState, useEffect } from "react";
 import type { LocationId } from "@/lib/types";
+import { LocationSelector } from "./LocationSelector";
 
-export function VanTab({
-  selectedLocation,
-}: {
-  selectedLocation: LocationId;
-}) {
+export function VanTab() {
+  const [selectedLocation, setSelectedLocation] = useState<LocationId>("nantucket");
   const [countdown, setCountdown] = useState(12);
 
   useEffect(() => {
@@ -20,21 +18,33 @@ export function VanTab({
 
   if (selectedLocation !== "nantucket") {
     return (
-      <div className="px-4 py-16 text-center">
-        <div className="text-5xl mb-4">🚐</div>
-        <h2 className="font-display text-xl font-bold text-text-heading mb-2">
-          The Cisco Van
-        </h2>
-        <p className="text-text-light text-sm max-w-[260px] mx-auto leading-relaxed">
-          The Cisco Van runs on Nantucket during the summer season. Switch to the
-          Nantucket location to see the schedule!
-        </p>
+      <div className="px-4 py-5">
+        <div className="flex items-center justify-between mb-4">
+          <h1 className="font-display text-xl font-bold text-text-heading">Cisco Van</h1>
+          <LocationSelector selected={selectedLocation} onChange={setSelectedLocation} />
+        </div>
+        <div className="py-12 text-center">
+          <div className="text-5xl mb-4">🚐</div>
+          <h2 className="font-display text-lg font-bold text-text-heading mb-2">
+            Not Available Here
+          </h2>
+          <p className="text-text-light text-sm max-w-[260px] mx-auto leading-relaxed">
+            The Cisco Van runs on Nantucket during the summer season. Switch to
+            Nantucket to see the schedule!
+          </p>
+        </div>
       </div>
     );
   }
 
   return (
     <div className="px-4 py-5 space-y-5">
+      {/* Location selector */}
+      <div className="flex items-center justify-between">
+        <h1 className="font-display text-xl font-bold text-text-heading">Cisco Van</h1>
+        <LocationSelector selected={selectedLocation} onChange={setSelectedLocation} />
+      </div>
+
       {/* Map area */}
       <div className="neu-raised-lg rounded-2xl overflow-hidden">
         <div className="p-5">

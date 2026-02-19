@@ -1,14 +1,15 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
-import type { TabId, LocationId } from "@/lib/types";
-import { locations } from "@/lib/data";
+import { useState, useCallback } from "react";
+import type { TabId } from "@/lib/types";
+import { user } from "@/lib/data";
 import { CiscoLogo } from "./CiscoLogo";
 import { CrewTab } from "./CrewTab";
 import { EventsTab } from "./EventsTab";
 import { VanTab } from "./VanTab";
 import { GearTab } from "./GearTab";
 import { DiscoverTab } from "./DiscoverTab";
+import { QRScannerModal } from "./QRScannerModal";
 
 const tabs: { id: TabId; label: string }[] = [
   { id: "crew", label: "The Crew" },
@@ -65,77 +66,14 @@ function TabIcon({ id, active }: { id: TabId; active: boolean }) {
   }
 }
 
-function LocationSelector({
-  selected,
-  onChange,
-}: {
-  selected: LocationId;
-  onChange: (loc: LocationId) => void;
-}) {
-  const [open, setOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    function handleClick(e: MouseEvent) {
-      if (ref.current && !ref.current.contains(e.target as Node)) {
-        setOpen(false);
-      }
-    }
-    document.addEventListener("mousedown", handleClick);
-    return () => document.removeEventListener("mousedown", handleClick);
-  }, []);
-
-  const current = locations.find((l) => l.id === selected)!;
-
-  return (
-    <div ref={ref} className="relative">
-      <button
-        onClick={() => setOpen(!open)}
-        className="neu-btn flex items-center gap-1.5 text-sm font-medium px-3 py-1.5"
-      >
-        <span className="text-xs">📍</span>
-        <span>{current.name}</span>
-        <svg
-          width="12"
-          height="12"
-          viewBox="0 0 12 12"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          className={`transition-transform ${open ? "rotate-180" : ""}`}
-        >
-          <path d="M3 4.5l3 3 3-3" />
-        </svg>
-      </button>
-      {open && (
-        <div className="absolute top-full mt-2 right-0 neu-raised-lg overflow-hidden z-50 min-w-[160px]">
-          {locations.map((loc) => (
-            <button
-              key={loc.id}
-              onClick={() => {
-                onChange(loc.id);
-                setOpen(false);
-              }}
-              className={`w-full text-left px-4 py-2.5 text-sm transition-colors ${
-                loc.id === selected
-                  ? "text-text-heading font-medium"
-                  : "text-text-light active:text-text"
-              }`}
-            >
-              {loc.name}
-            </button>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
-
 export function AppShell() {
   const [activeTab, setActiveTab] = useState<TabId>("crew");
-  const [selectedLocation, setSelectedLocation] =
-    useState<LocationId>("nantucket");
+  const [showScanner, setShowScanner] = useState(false);
+  const [stampsCollected, setStampsCollected] = useState(user.stampsCollected);
+
+  const handleStampEarned = useCallback(() => {
+    setStampsCollected((prev) => Math.min(prev + 1, user.totalStamps));
+  }, []);
 
   return (
     <div className="max-w-[430px] mx-auto min-h-screen flex flex-col relative" style={{ background: "#ECF0F3" }}>
@@ -154,22 +92,35 @@ export function AppShell() {
             </span>
           </div>
         </button>
-        <LocationSelector
-          selected={selectedLocation}
-          onChange={setSelectedLocation}
-        />
+
+        {/* QR Scan Button */}
+        <button
+          onClick={() => setShowScanner(true)}
+          className="neu-btn w-10 h-10 flex items-center justify-center text-text-heading"
+          style={{ borderRadius: "14px" }}
+          aria-label="Scan QR code"
+        >
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+            {/* Viewfinder corners */}
+            <path d="M7 3H5a2 2 0 00-2 2v2" />
+            <path d="M17 3h2a2 2 0 012 2v2" />
+            <path d="M7 21H5a2 2 0 01-2-2v-2" />
+            <path d="M17 21h2a2 2 0 002-2v-2" />
+            {/* Center scan area */}
+            <rect x="7" y="7" width="4" height="4" rx="0.5" />
+            <rect x="13" y="7" width="4" height="4" rx="0.5" />
+            <rect x="7" y="13" width="4" height="4" rx="0.5" />
+            <circle cx="15" cy="15" r="2" />
+          </svg>
+        </button>
       </header>
 
       {/* Tab Content */}
       <main className="flex-1 overflow-y-auto pb-20">
         <div key={activeTab} className="tab-content-enter">
-          {activeTab === "crew" && <CrewTab />}
-          {activeTab === "events" && (
-            <EventsTab selectedLocation={selectedLocation} />
-          )}
-          {activeTab === "van" && (
-            <VanTab selectedLocation={selectedLocation} />
-          )}
+          {activeTab === "crew" && <CrewTab stampsCollected={stampsCollected} />}
+          {activeTab === "events" && <EventsTab />}
+          {activeTab === "van" && <VanTab />}
           {activeTab === "gear" && <GearTab />}
           {activeTab === "discover" && <DiscoverTab />}
         </div>
@@ -197,6 +148,14 @@ export function AppShell() {
           })}
         </div>
       </nav>
+
+      {/* QR Scanner Modal */}
+      {showScanner && (
+        <QRScannerModal
+          onClose={() => setShowScanner(false)}
+          onStampEarned={handleStampEarned}
+        />
+      )}
     </div>
   );
 }

@@ -16,7 +16,8 @@ function StampIcon({ filled }: { filled: boolean }) {
   );
 }
 
-export function PunchCard() {
+export function PunchCard({ stampsCollected: stampsProp }: { stampsCollected?: number }) {
+  const stampsCollected = stampsProp ?? user.stampsCollected;
   const [tappedStamp, setTappedStamp] = useState<number | null>(null);
 
   const stampDates = [
@@ -38,7 +39,7 @@ export function PunchCard() {
             Loyalty Card
           </h3>
           <p className="text-text-light text-xs mt-0.5">
-            {user.stampsCollected} of {user.totalStamps} stamps
+            {stampsCollected} of {user.totalStamps} stamps
           </p>
         </div>
         <div className="text-text-light text-xs font-mono">
@@ -49,7 +50,7 @@ export function PunchCard() {
       {/* Stamp grid */}
       <div className="grid grid-cols-5 gap-2.5 mb-4">
         {Array.from({ length: user.totalStamps }).map((_, i) => {
-          const filled = i < user.stampsCollected;
+          const filled = i < stampsCollected;
           return (
             <div key={i} className="relative">
               <button
@@ -78,7 +79,7 @@ export function PunchCard() {
 
       {/* Progress text */}
       <p className="text-center text-text text-sm">
-        {user.totalStamps - user.stampsCollected} more pints to your next free
+        {user.totalStamps - stampsCollected} more pints to your next free
         beer 🍺
       </p>
     </div>

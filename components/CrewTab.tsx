@@ -4,7 +4,7 @@ import { user, activityFeed } from "@/lib/data";
 import { PunchCard } from "./PunchCard";
 import { CiscoLogo } from "./CiscoLogo";
 
-export function CrewTab() {
+export function CrewTab({ stampsCollected }: { stampsCollected?: number }) {
   return (
     <div className="px-4 py-5 space-y-5">
       {/* Greeting */}
@@ -35,7 +35,7 @@ export function CrewTab() {
       </div>
 
       {/* Punch Card */}
-      <PunchCard />
+      <PunchCard stampsCollected={stampsCollected} />
 
       {/* Quick Stats */}
       <div className="grid grid-cols-3 gap-3">
@@ -84,7 +84,7 @@ export function CrewTab() {
           <h3 className="font-display text-text-heading font-bold">Next Reward</h3>
         </div>
         <p className="text-text text-sm mb-3">
-          Free pint — {user.totalStamps - user.stampsCollected} stamps away
+          Free pint — {user.totalStamps - (stampsCollected ?? user.stampsCollected)} stamps away
         </p>
         <div className="pt-3" style={{ boxShadow: "inset 0 1px 0 rgba(0,0,0,0.04)" }}>
           <p className="text-brand text-xs font-medium mb-1.5">

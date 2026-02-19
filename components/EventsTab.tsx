@@ -3,6 +3,7 @@
 import { useState, useMemo } from "react";
 import type { LocationId, CiscoEvent } from "@/lib/types";
 import { events } from "@/lib/data";
+import { LocationSelector } from "./LocationSelector";
 
 function getTagClass(type: CiscoEvent["type"]) {
   const map: Record<string, string> = {
@@ -31,12 +32,9 @@ const MONTH_NAMES = [
 
 const DAY_HEADERS = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
 
-export function EventsTab({
-  selectedLocation,
-}: {
-  selectedLocation: LocationId;
-}) {
+export function EventsTab() {
   const today = new Date();
+  const [selectedLocation, setSelectedLocation] = useState<LocationId>("nantucket");
   const [viewYear, setViewYear] = useState(today.getFullYear());
   const [viewMonth, setViewMonth] = useState(today.getMonth());
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
@@ -99,6 +97,12 @@ export function EventsTab({
 
   return (
     <div className="px-4 py-5">
+      {/* Location selector */}
+      <div className="flex items-center justify-between mb-4">
+        <h1 className="font-display text-xl font-bold text-text-heading">Events</h1>
+        <LocationSelector selected={selectedLocation} onChange={setSelectedLocation} />
+      </div>
+
       {/* Calendar */}
       <div className="neu-raised rounded-2xl p-4 mb-5">
         {/* Month nav */}
