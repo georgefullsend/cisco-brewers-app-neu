@@ -1,8 +1,24 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import dynamic from "next/dynamic";
 import type { LocationId } from "@/lib/types";
 import { LocationSelector } from "./LocationSelector";
+
+const NantucketMap = dynamic(
+  () => import("./van/NantucketMap").then((mod) => mod.NantucketMap),
+  {
+    ssr: false,
+    loading: () => (
+      <div
+        className="neu-inset rounded-2xl flex items-center justify-center"
+        style={{ height: 240 }}
+      >
+        <span className="text-text-light text-sm">Loading map...</span>
+      </div>
+    ),
+  }
+);
 
 export function VanTab() {
   const [selectedLocation, setSelectedLocation] = useState<LocationId>("nantucket");
@@ -49,64 +65,30 @@ export function VanTab() {
       <div className="neu-raised-lg rounded-2xl overflow-hidden">
         <div className="p-5">
           <h2 className="font-display text-text-heading text-lg font-bold mb-4">
-            🚐 Van Tracker
+            Van Tracker
           </h2>
 
-          {/* Stylized route map */}
-          <div className="neu-inset rounded-2xl p-4">
-            {/* Route visualization */}
-            <div className="flex items-center justify-between mb-3">
-              {/* Downtown pin */}
-              <div className="text-center flex-shrink-0">
-                <div className="neu-raised-sm w-8 h-8 flex items-center justify-center mx-auto mb-1" style={{ borderRadius: "999px" }}>
-                  <span className="text-sm">📍</span>
-                </div>
-                <p className="text-text-light text-[10px] leading-tight max-w-[70px]">
-                  Downtown
-                </p>
-              </div>
-
-              {/* Route line with van */}
-              <div className="flex-1 mx-3 relative">
-                <div className="h-0.5 rounded-full" style={{ background: "#D1D9E6" }} />
-                <div className="absolute inset-0 flex items-center justify-between px-2">
-                  {Array.from({ length: 8 }).map((_, i) => (
-                    <div
-                      key={i}
-                      className="w-1.5 h-0.5 rounded-full"
-                      style={{ background: "#B8C0CC" }}
-                    />
-                  ))}
-                </div>
-                {/* Animated van */}
-                <div className="absolute -top-3 left-0 van-animate">
-                  <span className="text-xl">🚐</span>
-                </div>
-              </div>
-
-              {/* Cisco pin */}
-              <div className="text-center flex-shrink-0">
-                <div className="neu-raised-sm w-8 h-8 flex items-center justify-center mx-auto mb-1" style={{ borderRadius: "999px" }}>
-                  <span className="text-sm">🍺</span>
-                </div>
-                <p className="text-text-light text-[10px] leading-tight max-w-[70px]">
-                  Cisco Brewers
-                </p>
-              </div>
-            </div>
-
-            <p className="text-text-light text-[10px] text-center">
-              ~2.5 miles · ~10 min drive
-            </p>
+          {/* Real Nantucket map with route */}
+          <div className="neu-inset rounded-2xl overflow-hidden relative" style={{ height: 240, isolation: "isolate" }}>
+            <NantucketMap />
+            {/* Soft edge blend */}
+            <div
+              className="absolute inset-0 pointer-events-none rounded-2xl"
+              style={{ boxShadow: "inset 0 0 16px 8px rgba(236, 240, 243, 0.35)" }}
+            />
           </div>
 
+          <p className="text-text-light text-[10px] text-center mt-2">
+            ~2.5 miles · ~10 min drive
+          </p>
+
           {/* Status + Next van */}
-          <div className="flex items-center gap-3 mt-4">
+          <div className="flex items-center gap-3 mt-3">
             <span className="neu-raised-sm text-xs font-medium px-3 py-1" style={{ color: "#6B8F6B" }}>
-              Running Now ✅
+              Running Now
             </span>
             <span className="text-text text-sm pulse-soft">
-              🚐 Next from Downtown: ~{countdown} min
+              Next from Downtown: ~{countdown} min
             </span>
           </div>
         </div>
