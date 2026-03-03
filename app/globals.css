@@ -192,15 +192,55 @@ button {
 }
 
 /* ========================================
-   VAN ANIMATION
+   MAP MARKERS (Leaflet overrides)
    ======================================== */
 
-@keyframes van-drive {
-  0%, 100% { transform: translateX(0%); }
-  50% { transform: translateX(calc(100% - 32px)); }
+.van-marker,
+.endpoint-marker {
+  background: none !important;
+  border: none !important;
 }
-.van-animate {
-  animation: van-drive 8s ease-in-out infinite;
+
+.van-marker-inner {
+  width: 36px;
+  height: 36px;
+  background: #ECF0F3;
+  border-radius: 50%;
+  box-shadow:
+    3px 3px 6px rgba(0, 0, 0, 0.15),
+    -3px -3px 6px rgba(255, 255, 255, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #5A5E62;
+}
+
+.van-marker-inner svg {
+  width: 20px;
+  height: 20px;
+}
+
+.endpoint-marker-inner {
+  width: 30px;
+  height: 30px;
+  background: #ECF0F3;
+  border-radius: 50%;
+  box-shadow:
+    3px 3px 6px rgba(0, 0, 0, 0.12),
+    -3px -3px 6px rgba(255, 255, 255, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #5A5E62;
+}
+
+.leaflet-control-attribution {
+  display: none !important;
+}
+
+.leaflet-container {
+  background: #ECF0F3 !important;
+  font-family: var(--font-body) !important;
 }
 
 /* ========================================
